@@ -8,7 +8,7 @@ do
 
     elif [ ${!i} = "-npm" ];
     then ((i++)) 
-        npm publish --access public;
+        npm publish --access public --scope=tideflowio;
     fi
 
 done;
