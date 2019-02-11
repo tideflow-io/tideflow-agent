@@ -44,7 +44,7 @@ module.exports.exec = (program) => {
 
   // Show a connection lost message
   socket.on('reconnecting', function () {
-    console.eror(` || Connection lost, reconnecting...`.red)
+    console.error(` || Connection lost, reconnecting...`.red)
   })
 
   // Warm the user in case of error 
