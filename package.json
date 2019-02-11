@@ -1,13 +1,16 @@
 {
   "name": "@tideflowio/tfagent",
-  "version": "0.1.2.1",
+  "version": "0.1.3",
   "description": "Tideflow.io's agent",
   "main": "index.js",
   "keywords": [
+    "cli-app",
+		"cli",
     "tideflow",
     "command",
     "execute",
-    "workflow"
+    "workflow",
+    "simple"
   ],
   "scripts": {
     "test": "mocha"
@@ -19,7 +22,14 @@
     "type": "git",
     "url": "git+https://github.com/tideflow-io/tfagent.git"
   },
-  "author": "Jose Constela <jose@joseconstela.com>",
+  "author": {
+		"name": "Jose Constela",
+		"email": "jose@joseconstela.com",
+		"url": "joseconstela.com"
+  },
+  "engines": {
+		"node": ">=6"
+	},
   "license": "MIT",
   "homepage": "https://www.tideflow.io/features/tfagent",
   "dependencies": {
