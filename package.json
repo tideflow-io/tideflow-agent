@@ -1,0 +1,47 @@
+{
+  "name": "@tideflowio/tfagent",
+  "version": "0.0.4",
+  "description": "Tideflow.io's agent",
+  "main": "index.js",
+  "keywords": [
+    "cli-app",
+    "cli",
+    "tideflow",
+    "command",
+    "execute",
+    "workflow",
+    "simple"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "bin": {
+    "tfagent": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tideflow-io/tfagent.git"
+  },
+  "author": {
+    "name": "Jose Constela",
+    "email": "jose@joseconstela.com",
+    "url": "https://joseconstela.com"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "MIT",
+  "homepage": "https://www.tideflow.io/features/tfagent",
+  "dependencies": {
+    "colors": "^1.3.3",
+    "commander": "^2.19.0",
+    "socket.io-client": "^2.2.0",
+    "update-notifier": "^2.5.0"
+  },
+  "bugs": {
+    "url": "https://github.com/tideflow-io/tfagent/issues"
+  },
+  "directories": {
+    "test": "test"
+  }
+}
