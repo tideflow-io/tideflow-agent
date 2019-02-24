@@ -14,8 +14,8 @@ program
 program.on('--help', function(){
   console.log('')
   console.log('Examples:')
-  console.log('  $ tfio-node --help')
-  console.log('  $ tfio-node -h')
+  console.log('  $ tideflow-agent --help')
+  console.log('  $ tideflow-agent -h')
 })
  
 program.parse(process.argv)

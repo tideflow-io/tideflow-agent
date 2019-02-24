@@ -15,9 +15,7 @@ module.exports.exec = (program) => {
   console.log(pretty.logo())
   console.log(` || Tideflow.io - agent ${pjson.version}`.blue)
 
-  const URL = process.env.TF_AGENT_LOCAL ? 
-    'http://localhost:1337' : 
-    'https://platform-q.tideflow.io:1337'
+  const URL = process.env.TF_AGENT_URL || 'http://localhost:1337'
 
   const socket = io(`${URL}?token=${program.token}`)
 

@@ -1,5 +1,36 @@
-# Tideflow's agent
+# Tideflow's agent [![CircleCI](https://circleci.com/gh/tideflow-io/tideflow-agent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tfagent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tfagent.svg)](https://greenkeeper.io/)
 
-> Tideflow.io's agent
+> Run commands as workflow steps via [tideflow](https://tideflow.io)
 
-[![CircleCI](https://circleci.com/gh/tideflow-io/tfagent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tfagent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tfagent.svg)](https://greenkeeper.io/)
+## Install
+
+Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run
+the following:
+
+```
+$ npm install --global tideflow-agent
+```
+
+## Usage
+
+    $ tideflow-agent --help                                          
+    Usage: index [options]
+
+    Options:
+      --noupdate           Opt-out of update version check
+      -v, --version        output the version number
+      -t, --token [token]  Authentication token
+      -h, --help           output usage information
+
+    Examples:
+      $ tideflow-agent --help
+      $ tideflow-agent -h
+
+## Environment variables
+
+```bash
+# Specify the URL to connect to the Tideflow's platform.
+# Optional. Defaults to localhost:1337
+# Example: http://subdomain.example.com:1337
+TF_AGENT_URL
+```
