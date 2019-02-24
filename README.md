@@ -4,11 +4,10 @@
 
 ## Install
 
-Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run
-the following:
+Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run the following:
 
 ```
-$ npm install --global tideflow-agent
+$ npm i -g @tideflowio/tideflow-agent
 ```
 
 ## Usage

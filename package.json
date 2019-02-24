@@ -1,6 +1,6 @@
 {
-  "name": "@tideflowio/tfagent",
-  "version": "0.1.4",
+  "name": "@tideflowio/tideflow-agent",
+  "version": "0.0.2",
   "description": "Tideflow.io's agent",
   "main": "index.js",
   "keywords": [
@@ -16,7 +16,7 @@
     "test": "mocha"
   },
   "bin": {
-    "tfagent": "./index.js"
+    "tideflow-agent": "index.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "url": "https://github.com/tideflow-io/tideflow-agent/graphs/contributors"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "license": "MIT",
   "homepage": "https://github.com/tideflow-io/tideflow-agent",
