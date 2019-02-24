@@ -1,4 +1,4 @@
-# Tideflow's agent [![CircleCI](https://circleci.com/gh/tideflow-io/tideflow-agent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tfagent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tfagent.svg)](https://greenkeeper.io/)
+# Tideflow's agent [![CircleCI](https://circleci.com/gh/tideflow-io/tideflow-agent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tideflow-agent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tideflow-agent.svg)](https://greenkeeper.io/)
 
 > Run commands as workflow steps via [tideflow](https://tideflow.io)
 
