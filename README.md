@@ -16,10 +16,11 @@ $ npm i -g @tideflowio/tideflow-agent
     Usage: index [options]
 
     Options:
-      --noupdate           Opt-out of update version check
-      -v, --version        output the version number
-      -t, --token [token]  Authentication token
-      -h, --help           output usage information
+      -v, --version                          output the version number
+      -c, --concurrency [concurrency]        Max number of jobs the agent should process concurrently
+      -t, --token [token]                    Authentication token
+      --noupdate                             Opt-out of update version check
+      -h, --help                             output usage information
 
     Examples:
       $ tideflow-agent --help

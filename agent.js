@@ -3,35 +3,42 @@ const io = require('socket.io-client')
 const colors = require('colors')
 const pretty = require('./helpers/pretty')
 const runner = require('./runner')
+const os = require('os')
 
 /**
  * @param {Object} cli's parameters parsed via commander's npm package
  */
 module.exports.exec = (program) => {
 
+  const cpusCounts = os.cpus().length
+  const programConcurrency = program.concurrency || cpusCounts
+  let concurrency = programConcurrency >= cpusCounts ? cpusCounts : programConcurrency
+
+  const q = require('queue')({
+    concurrency: concurrency
+  })
+
   let agent = {}
 
   // Shows welcome messages
   console.log(pretty.logo())
   console.log(` || Tideflow.io - agent ${pjson.version}`.blue)
+  console.log(` || Using ${concurrency} as concurrency`.yellow)
 
   const URL = process.env.TF_AGENT_URL || 'http://localhost:1337'
 
   const socket = io(`${URL}?token=${program.token}`)
 
-  // socket.on('connect', function () {})
-
-  // socket.on('reconnect', function () {})
-
   // Execute command
   socket.on('tf.command', function (req) {
     if (!agent.authenticated) return
-    runner.cmd(socket, 'tf.command', req)
+    q.push(runner.cmd(socket, 'tf.command', req))
   })
 
   // Execute code
   socket.on('tf.code', function () {
-    if (!agent.token) return
+    if (!agent.authenticated) return
+    q.push(runner.code(socket, 'tf.code', req))
   })
 
   // Authorize agent

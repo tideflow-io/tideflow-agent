@@ -1,4 +1,4 @@
-const { spawn } = require('child_process')
+const spawn = require('cross-spawn')
 const report = require('./helpers/report')
 
 /**
@@ -50,3 +50,18 @@ const cmd = (socket, topic, req) => {
 }
 
 module.exports.cmd = cmd
+
+/**
+ * Handles the execution of nodejs code sent from the platform
+ * 
+ * @param {Object} socket Socket's io socket that requested the execution
+ * @param {String} topic Original message's topic
+ * @param {Object} req Original request that came fromthe platform
+ */
+const code = (socket, topic, req) => {
+  return new Promise((resolve, reject) => {
+    return reject('Not supported yet')
+  })
+}
+
+module.exports.code = code
