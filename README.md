@@ -1,6 +1,6 @@
 # Tideflow's agent [![CircleCI](https://circleci.com/gh/tideflow-io/tideflow-agent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tideflow-agent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tideflow-agent.svg)](https://greenkeeper.io/) [![Gitter](https://badges.gitter.im/join_chat.svg)](https://gitter.im/tideflow-io/community)
 
-> Run commands as workflow steps via [tideflow](https://tideflow.io)
+> Run commands as workflow steps via [Tideflow](https://tideflow.io)
 
 ## Install
 
@@ -40,3 +40,7 @@ npx @tideflowio/tideflow-agent -t [token]
 # Example: http://subdomain.example.com:1337
 TF_AGENT_URL
 ```
+
+## Resources:
+
+- Documentation: https://docs.tideflow.io/docs/services-agent
