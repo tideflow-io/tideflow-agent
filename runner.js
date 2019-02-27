@@ -13,8 +13,18 @@ const cmd = (socket, topic, req) => {
   
     // Given the command to execute, get the program's name and its parameters
     // in order to pass them to child_process.spawn
-    const parameters = req.command.split(' ')
+    let parameters = req.command.split(' ')
     const command = parameters.shift()
+
+    // Check if the command is attaching the output from the previous flow's step
+    if (req.previous) {
+      [
+        '--tf_previous',
+        req.previous
+      ].map(p => parameters.push(p))
+    }
+
+    console.log({command, parameters})
 
     // Execute the command in a child process so that stds can be monitored
     let sp = spawn(command, parameters)
@@ -25,7 +35,7 @@ const cmd = (socket, topic, req) => {
     )
     
     // Report stderr
-    sp.stderr.on('data', data => 
+    sp.stderr.on('data', data =>
       report.progress(socket, topic, req, null, data.toString())
     )
     
