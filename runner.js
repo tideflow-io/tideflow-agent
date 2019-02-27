@@ -24,8 +24,6 @@ const cmd = (socket, topic, req) => {
       ].map(p => parameters.push(p))
     }
 
-    console.log({command, parameters})
-
     // Execute the command in a child process so that stds can be monitored
     let sp = spawn(command, parameters)
 
