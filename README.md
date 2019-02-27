@@ -26,6 +26,12 @@ $ npm i -g @tideflowio/tideflow-agent
       $ tideflow-agent --help
       $ tideflow-agent -h
 
+You can also run the agent without installing it, via npx.
+
+```bash
+npx @tideflowio/tideflow-agent -t [token]
+```
+
 ## Environment variables
 
 ```bash
