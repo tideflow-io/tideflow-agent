@@ -69,7 +69,7 @@ module.exports.progress = progress
  */
 const result = (socket, topic, originalMessage, res) => {
   console.log(' || Command executed. Reporting...'.yellow)
-
+  
   const message = Object.assign(originalMessage, {
     stdout: parseStd(res.stdout),
     stderr: parseStd(res.stderr)

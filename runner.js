@@ -1,4 +1,6 @@
 const spawn = require('cross-spawn')
+const tmp = require('tmp')
+const fs = require('fs')
 const report = require('./helpers/report')
 
 /**
@@ -10,18 +12,22 @@ const report = require('./helpers/report')
  */
 const cmd = (socket, topic, req) => {
   return new Promise((resolve, reject) => {
-  
+
+    // Store code in tmp file
+    const previousfile = tmp.tmpNameSync()
+    const commandFile = tmp.tmpNameSync()
+    fs.writeFileSync(commandFile, req.command)
+
     // Given the command to execute, get the program's name and its parameters
     // in order to pass them to child_process.spawn
-    let parameters = req.command.split(' ')
-    const command = parameters.shift()
+    const command = process.platform === 'win32' ? 'sh' : 'bash'
+    let parameters = [commandFile]
 
     // Check if the command is attaching the output from the previous flow's step
     if (req.previous) {
-      [
-        '--tf_previous',
-        req.previous
-      ].map(p => parameters.push(p))
+      fs.writeFileSync(previousfile, req.previous)
+      parameters.push('--tf_previous_file')
+      parameters.push(previousfile)
     }
 
     // Execute the command in a child process so that stds can be monitored
@@ -39,6 +45,8 @@ const cmd = (socket, topic, req) => {
     
     // Report Exit code
     sp.on('exit', code => {
+      fs.unlinkSync(previousfile)
+      fs.unlinkSync(commandFile)
       report.result( socket, topic, req,
         {
           stderr: code ? `EXIT CODE ${code}` : null,
@@ -51,6 +59,8 @@ const cmd = (socket, topic, req) => {
     
     // Report an exception
     sp.on('error', (error) => {
+      fs.unlinkSync(previousfile)
+      fs.unlinkSync(commandFile)
       report.exception( socket, topic, req, error.toString() )
       return reject(error)
     })
