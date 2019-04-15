@@ -6,13 +6,13 @@
 
 Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run the following:
 
-```
-$ npm i -g @tideflowio/tideflow-agent
+```bash
+npm i -g @tideflowio/tideflow-agent
 ```
 
 ## Usage
 
-    $ tideflow-agent --help                                          
+    $ tideflow-agent --help
     Usage: index [options]
 
     Options:
@@ -41,6 +41,6 @@ npx @tideflowio/tideflow-agent -t [token]
 TF_AGENT_URL
 ```
 
-## Resources:
+## Resources
 
 - Documentation: https://docs.tideflow.io/docs/services-agent
