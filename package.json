@@ -38,7 +38,7 @@
     "queue": "^6.0.0",
     "socket.io-client": "^2.2.0",
     "tmp": "^0.1.0",
-    "update-notifier": "^2.5.0"
+    "update-notifier": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
