@@ -16,11 +16,12 @@ npm i -g @tideflowio/tideflow-agent
     Usage: index [options]
 
     Options:
-      -v, --version                          output the version number
-      -c, --concurrency [concurrency]        Max number of jobs the agent should process concurrently
-      -t, --token [token]                    Authentication token
-      --noupdate                             Opt-out of update version check
-      -h, --help                             output usage information
+      -v, --version                       output the version number
+      -c, --concurrency [concurrency]     Max number of jobs the agent should process concurrently
+      -t, --token [token]                 Authentication token
+      -u, --url [url]                     Tideflow url
+      --noupdate                          Opt-out of update version check
+      -h, --help                          output usage information
 
     Examples:
       $ tideflow-agent --help
@@ -29,14 +30,14 @@ npm i -g @tideflowio/tideflow-agent
 You can also run the agent without installing it, via npx.
 
 ```bash
-npx @tideflowio/tideflow-agent -t [token]
+npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 ```
 
 ## Environment variables
 
 ```bash
 # Specify the URL to connect to the Tideflow's platform.
-# Optional. Defaults to localhost:1337
+# Optional. Defaults to localhost:1337 if no -u parameter set
 # Example: http://subdomain.example.com:1337
 TF_AGENT_URL
 ```

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 const program = require('commander')
+const url = require('url')
 const os = require('os')
 const pkg = require('./package.json')
   
@@ -15,6 +16,11 @@ program
   .option('-t, --token [token]', 'Authentication token', (v) => {
     return v || process.env.TIDEFLOWIO_AGENT_TOKEN
   })
+  .option('-u, --url [url]', 'Tideflow url', (v) => {
+    const parse = url.parse(v)
+    if (!parse.hostname) { throw new Error(`"${URL}" is not a valid url`) }
+    return v
+  })
   .option('--noupdate', 'Opt-out of update version check')
 
 // must be before .parse() since
@@ -23,7 +29,7 @@ program
 program.on('--help', function(){
   console.log('')
   console.log('Examples:')
-  console.log('  $ tideflow-agent -t agent-auth-token')
+  console.log('  $ tideflow-agent -u http://mytideflow.example.com -t agent-auth-token')
   console.log('  $ tideflow-agent -c 16 -t agent-auth-token')
   console.log('  $ tideflow-agent --help')
   console.log('  $ tideflow-agent -h')
