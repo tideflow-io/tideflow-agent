@@ -4,6 +4,7 @@ const colors = require('colors')
 const url = require('url')
 const pretty = require('./helpers/pretty')
 const runner = require('./runner')
+const ghci = require('./ghci')
 const os = require('os')
 
 /**
@@ -33,6 +34,11 @@ module.exports.exec = (program) => {
   console.log(` || Target URL ${URL}`.yellow)
 
   const socket = io(`${URL}?token=${program.token}`)
+
+  socket.on('s-gh-ci-pull_request', (req) => {
+    if (!agent.authenticated) return
+    q.push(ghci.cmd(socket, 's-gh-ci-pull_request', req))
+  })
 
   // Execute command
   socket.on('tf.command', function (req) {
