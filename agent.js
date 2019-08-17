@@ -3,8 +3,7 @@ const io = require('socket.io-client')
 const colors = require('colors')
 const url = require('url')
 const pretty = require('./helpers/pretty')
-const runner = require('./runner')
-const ghci = require('./ghci')
+const services = require('./services')
 const os = require('os')
 
 /**
@@ -35,21 +34,31 @@ module.exports.exec = (program) => {
 
   const socket = io(`${URL}?token=${program.token}`)
 
-  socket.on('s-gh-ci-pull_request', (req) => {
+  socket.on('tf.githubCi.pullRequest', (req) => {
     if (!agent.authenticated) return
-    q.push(ghci.cmd(socket, 's-gh-ci-pull_request', req))
+    q.push(services.githubCi.push(socket, 'tf.githubCi.pullRequest', req))
+  })
+
+  socket.on('tf.githubCi.push', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.push(socket, 'tf.githubCi.push', req))
+  })
+
+  socket.on('tf.githubCi.test_cmd', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.test_cmd(socket, 'tf.githubCi.test_cmd', req))
   })
 
   // Execute command
-  socket.on('tf.command', function (req) {
+  socket.on('tf.agent.execute', function (req) {
     if (!agent.authenticated) return
-    q.push(runner.cmd(socket, 'tf.command', req))
+    q.push(services.agent.execute(socket, 'tf.agent.execute', req))
   })
 
   // Execute code
-  socket.on('tf.code', function () {
+  socket.on('tf.agent.code', function () {
     if (!agent.authenticated) return
-    q.push(runner.code(socket, 'tf.code', req))
+    q.push(services.agent.code(socket, 'tf.agent.code', req))
   })
 
   // Authorize agent

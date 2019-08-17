@@ -37,12 +37,11 @@ module.exports.parseStd = parseStd
  * Reports stds outputed by the in-execution command.
  * 
  * @param {Object} socket Socket's io socket that requested the execution
- * @param {String} topic Original message's topic
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {String} stdout Command's stdout output
  * @param {String} stderr Command's stderr output
  */
-const progress = (socket, topic, originalMessage, stdout, stderr) => {
+const progress = (socket, originalMessage, stdout, stderr) => {
   console.log(' || STDOUT/ERR. Reporting...'.yellow)
 
   const res = Object.assign(originalMessage, {
@@ -54,7 +53,7 @@ const progress = (socket, topic, originalMessage, stdout, stderr) => {
   // an actual std output to be reported.
   if (!res.stdout && !res.stderr) { return }
 
-  socket.emit(`${topic}.progress`, res)
+  socket.emit('tf.notify.progress', res)
 }
 
 module.exports.progress = progress
@@ -67,15 +66,13 @@ module.exports.progress = progress
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} res Object containing both stds
  */
-const result = (socket, topic, originalMessage, res) => {
+const result = (socket, originalMessage, res) => {
   console.log(' || Command executed. Reporting...'.yellow)
   
-  const message = Object.assign(originalMessage, {
+  socket.emit('tf.notify.finish', Object.assign(originalMessage, {
     stdout: parseStd(res.stdout),
     stderr: parseStd(res.stderr)
-  })
-
-  socket.emit(`${topic}.res`, message)
+  }))
 }
 
 module.exports.result = result
@@ -87,10 +84,10 @@ module.exports.result = result
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} executionResult Catched exception
  */
-const exception = (socket, topic, originalMessage, ex) => {
+const exception = (socket, originalMessage, ex) => {
   console.log(' || Command returned error'.red)
 
-  socket.emit(`${topic}.exception`, Object.assign(originalMessage, {ex}))
+  socket.emit('tf.notify.exception', Object.assign(originalMessage, {ex}))
 }
 
 module.exports.exception = exception

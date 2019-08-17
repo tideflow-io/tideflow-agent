@@ -1,7 +1,7 @@
 const spawn = require('cross-spawn')
 const tmp = require('tmp')
 const fs = require('fs')
-const report = require('./helpers/report')
+const report = require('../helpers/report')
 
 /**
  * Handles the execution of commands sent from the platform
@@ -10,7 +10,7 @@ const report = require('./helpers/report')
  * @param {String} topic Original message's topic
  * @param {Object} req Original request that came fromthe platform
  */
-const cmd = (socket, topic, req) => {
+const execute = (socket, topic, req) => {
   return new Promise((resolve, reject) => {
 
     // Store code in tmp file
@@ -35,19 +35,19 @@ const cmd = (socket, topic, req) => {
 
     // Report stdout
     sp.stdout.on('data', data =>
-      report.progress(socket, topic, req, data.toString(), null)
+      report.progress(socket, req, data.toString(), null)
     )
     
     // Report stderr
     sp.stderr.on('data', data =>
-      report.progress(socket, topic, req, null, data.toString())
+      report.progress(socket, req, null, data.toString())
     )
     
     // Report Exit code
     sp.on('exit', code => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
-      report.result( socket, topic, req,
+      report.result( socket, req,
         {
           stderr: code ? `EXIT CODE ${code}` : null,
           stdout: code ? null : `EXIT CODE ${code}`
@@ -61,13 +61,13 @@ const cmd = (socket, topic, req) => {
     sp.on('error', (error) => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
-      report.exception( socket, topic, req, error.toString() )
+      report.exception( socket, req, error.toString() )
       return reject(error)
     })
   })
 }
 
-module.exports.cmd = cmd
+module.exports.execute = execute
 
 /**
  * Handles the execution of nodejs code sent from the platform
