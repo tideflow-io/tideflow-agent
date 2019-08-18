@@ -39,9 +39,19 @@ module.exports.exec = (program) => {
     q.push(services.githubCi.pullRequest(socket, 'tf.githubCi.pullRequest', req))
   })
 
+  socket.on('tf.githubCi.pullRequest.execution.finished', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.executionFinished(socket, 'tf.githubCi.pullRequest.execution.finished', req))
+  })
+  
   socket.on('tf.githubCi.push', (req) => {
     if (!agent.authenticated) return
     q.push(services.githubCi.push(socket, 'tf.githubCi.push', req))
+  })
+
+  socket.on('tf.githubCi.push.execution.finished', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.executionFinished(socket, 'tf.githubCi.push.execution.finished', req))
   })
 
   socket.on('tf.githubCi.test_cmd', (req) => {

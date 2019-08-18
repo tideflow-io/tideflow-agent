@@ -1,5 +1,5 @@
 const git = require('simple-git/promise');
-const fs = require('fs')
+const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 const spawn = require('cross-spawn')
@@ -47,6 +47,12 @@ const push = async (socket, topic, req) => {
 
 module.exports.push = push
 module.exports.pullRequest = push
+
+const executionFinished = async (socket, topic, req) => {
+  const tmpPath = genTmpFolder(req.execution)
+  fs.removeSync(tmpPath)
+}
+module.exports.executionFinished = executionFinished
 
 const test_cmd = async (socket, topic, req) => {
   const commands = req.cmd.split('\n')
