@@ -70,12 +70,11 @@ module.exports.exec = (program) => {
     q.push(services.agent.execute(socket, 'tf.agent.execute', req))
   })
 
-  // Execute code
-  socket.on('tf.agent.code', function () {
+  socket.on('tf.agent.code_nodesfc', function(req) {
     if (!agent.authenticated) return
-    q.push(services.agent.code(socket, 'tf.agent.code', req))
+    q.push(services.agent.codeNodeSfc(socket, 'tf.agent.code_nodesfc', req))
   })
-
+  
   // Authorize agent
   socket.on('tf.authz', function (auth) {
     agent = Object.assign({authenticated: true}, agent, auth)

@@ -2,6 +2,9 @@ const spawn = require('cross-spawn')
 const tmp = require('tmp')
 const fs = require('fs')
 const report = require('../helpers/report')
+const os = require('os')
+const path = require('path')
+const nodesfc = require('nodesfc')
 
 /**
  * Handles the execution of commands sent from the platform
@@ -69,6 +72,8 @@ const execute = (socket, topic, req) => {
 
 module.exports.execute = execute
 
+
+
 /**
  * Handles the execution of nodejs code sent from the platform
  * 
@@ -76,10 +81,21 @@ module.exports.execute = execute
  * @param {String} topic Original message's topic
  * @param {Object} req Original request that came fromthe platform
  */
-const code = (socket, topic, req) => {
-  return new Promise((resolve, reject) => {
-    return reject('Not supported yet')
-  })
+const codeNodeSfc = async (socket, topic, req) => {
+  const file = tmp.tmpNameSync()
+  fs.writeFileSync(file, req.code)
+
+  try {
+    let result = await nodesfc.init({file})
+    report.bulkResult(socket, req, result)
+  }
+  catch (ex) {
+    console.error({ex})
+    report.exception( socket, req, ex.toString() )
+  }
+  finally {
+    fs.unlinkSync(file)
+  }
 }
 
-module.exports.code = code
+module.exports.codeNodeSfc = codeNodeSfc
