@@ -16,34 +16,37 @@ const genTmpFolder = (subfix) => {
   return tmpPath
 }
 
-const push = (socket, topic, req) => {
-  console.log({req})
+const push = async (socket, topic, req) => {
   const triggerService = req.triggerService
   const webhook = req.webhook
   const repo = webhook.repository.full_name
   const tmpPath = genTmpFolder(req.execution)
 
+  const sha = webhook.pullRequest ? webhook.pullRequest.head.sha : webhook.head_commit.id
+
   report.progress(socket, req, `Clonning ${repo}`, null)
+  report.progress(socket, req, `SHA ${sha}`, null)
   report.progress(socket, req, `Temporal path ${tmpPath}`, null)
 
   // Clone repository
-  git()
-    .clone(`https://tideflow:${triggerService.config.secret}@github.com/${repo}`, tmpPath)
-    .then(result => {
-      delete req.webhook
-      report.result( socket, req,
-        {
-          stderr: null,
-          stdout: 'Clone finished'
-        }
-      )
-    })
-    .catch(err => {
-      report.exception( socket, req, err.toString() )
-    });
+  try {
+    await git().clone(`https://tideflow:${triggerService.config.secret}@github.com/${repo}`, tmpPath)
+    await git(tmpPath).checkout(sha)
+    delete req.webhook
+    report.result( socket, req,
+      {
+        stderr: null,
+        stdout: 'Clone finished'
+      }
+    )
+  }
+  catch (ex) {
+    report.exception( socket, req, ex.toString() )
+  }
 }
 
 module.exports.push = push
+module.exports.pullRequest = push
 
 const test_cmd = async (socket, topic, req) => {
   const commands = req.cmd.split('\n')
@@ -100,10 +103,9 @@ const test_cmd = async (socket, topic, req) => {
 
   try {
     await Promise.all(processCommands)
-    console.log('all promises done')
     report.result(socket, req,
       {
-        stdout: 'Clone finished'
+        stdout: 'Execution finished'
       }
     )
   }
@@ -113,4 +115,5 @@ const test_cmd = async (socket, topic, req) => {
 }
 
 module.exports.test_cmd = test_cmd
+module.exports.run_cmd = test_cmd
 
