@@ -54,6 +54,16 @@ module.exports.exec = (program) => {
     q.push(services.githubCi.executionFinished(socket, 'tf.githubCi.push.execution.finished', req))
   })
 
+  socket.on('tf.githubCi.checksuite', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.checksuite(socket, 'tf.githubCi.checksuite', req))
+  })
+
+  socket.on('tf.githubCi.checksuite.execution.finished', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.githubCi.executionFinished(socket, 'tf.githubCi.checksuite.execution.finished', req))
+  })
+
   socket.on('tf.githubCi.test_cmd', (req) => {
     if (!agent.authenticated) return
     q.push(services.githubCi.test_cmd(socket, 'tf.githubCi.test_cmd', req))
@@ -66,6 +76,9 @@ module.exports.exec = (program) => {
 
   // Execute command
   socket.on('tf.agent.execute', function (req) {
+    console.log('RECEIVE')
+    console.log('RECEIVE')
+    console.log(req)
     if (!agent.authenticated) return
     q.push(services.agent.execute(socket, 'tf.agent.execute', req))
   })

@@ -15,7 +15,7 @@ const nodesfc = require('nodesfc')
  */
 const execute = (socket, topic, req) => {
   return new Promise((resolve, reject) => {
-
+    
     // Store code in tmp file
     const previousfile = tmp.tmpNameSync()
     const commandFile = tmp.tmpNameSync()
