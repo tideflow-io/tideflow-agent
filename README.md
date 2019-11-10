@@ -1,16 +1,14 @@
 # Tideflow's agent [![CircleCI](https://circleci.com/gh/tideflow-io/tideflow-agent.svg?style=svg)](https://circleci.com/gh/tideflow-io/tideflow-agent) [![Greenkeeper badge](https://badges.greenkeeper.io/tideflow-io/tideflow-agent.svg)](https://greenkeeper.io/)
 
-> Run commands as workflow steps via [Tideflow](https://tideflow.io)
+> With Tideflow's Agent, you can run workflow's task in your own computer via [TideFlow](https://www.tideflow.io)
 
-## Install
-
-Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run the following:
-
-```bash
-npm i -g @tideflowio/tideflow-agent
-```
+For more information, visit [TideFlow.io](https://www.tideflow.io)
 
 ## Usage
+
+```bash
+npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
+```
 
     $ tideflow-agent --help
     Usage: index [options]
@@ -27,12 +25,6 @@ npm i -g @tideflowio/tideflow-agent
       $ tideflow-agent --help
       $ tideflow-agent -h
 
-You can also run the agent without installing it, via npx.
-
-```bash
-npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
-```
-
 ## Environment variables
 
 ```bash
@@ -42,6 +34,18 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 TF_AGENT_URL
 ```
 
-## Resources
+---
+
+## Contributing
+
+If you would like to contribute to Tideflow, check out the
+[Contributing Guide](https://docs.tideflow.io/docs/contribute).
+
+## License
+
+GNU AFFERO GENERAL PUBLIC LICENSE
+
+## Developer Resources
 
 - Documentation: https://docs.tideflow.io/docs/services-agent
+- Contribute: https://docs.tideflow.io/docs/contribute
