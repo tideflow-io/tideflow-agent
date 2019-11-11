@@ -111,8 +111,7 @@ module.exports.result = result
  * @param {Object} executionResult Catched exception
  */
 const exception = (socket, originalMessage, ex) => {
-  console.log(' || Command returned error'.red)
-
+  console.error(' || Command returned error'.red)
   socket.emit('tf.notify.exception', Object.assign(originalMessage, {ex}))
 }
 

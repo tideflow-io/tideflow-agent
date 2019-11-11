@@ -34,6 +34,33 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 TF_AGENT_URL
 ```
 
+## How to process data from previous tasks.
+
+The result from previous tasks are sent to the agent commands via the parameter
+`--tf_previous`. 
+
+For example, if the command to run is `meow`, the agent will execute it as
+`meow --tf_previous <previous-tasks-output>`
+
+The previous task's output is an stringified representation of the following
+JSON array:
+
+```json
+[
+  {
+    "type" : "object",
+    "data" : {}
+  }
+]
+```
+
+Each of the predecesor tasks results is represented as an arrray element with
+two root properties:
+
+- **type**: an string that defines the kind of data retuned by the previous
+step (object, array, file, etc)
+- **data**: an object containing the task's result.
+
 ---
 
 ## Contributing

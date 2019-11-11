@@ -10,7 +10,7 @@ const os = require('os')
  * @param {Object} cli's parameters parsed via commander's npm package
  */
 module.exports.exec = (program) => {
-
+  
   const cpusCounts = os.cpus().length
   const programConcurrency = program.concurrency || cpusCounts
   let concurrency = programConcurrency >= cpusCounts ? cpusCounts : programConcurrency
