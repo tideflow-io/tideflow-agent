@@ -34,7 +34,16 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 TF_AGENT_URL
 ```
 
-## How to process data from previous tasks.
+## How to process data from previous tasks
+
+Each of the predecesor tasks results is represented as an array element with
+two root properties:
+
+- **type**: an string that defines the kind of data retuned by the previous
+step (object, array, file, etc)
+- **data**: an object containing the task's result.
+
+### Command actions
 
 The result from previous tasks are sent to the agent commands via the parameter
 `--tf_previous`. 
@@ -46,20 +55,28 @@ The previous task's output is an stringified representation of the following
 JSON array:
 
 ```json
-[
-  {
-    "type" : "object",
-    "data" : {}
-  }
-]
+[ { "type" : "object", "data" : {} } ]
 ```
 
-Each of the predecesor tasks results is represented as an arrray element with
-two root properties:
+### NodeJS SFC actions
 
-- **type**: an string that defines the kind of data retuned by the previous
-step (object, array, file, etc)
-- **data**: an object containing the task's result.
+The result from previous tasks are stored in a file. You can get the absolute
+path to this file in a environment variable called `TF_PREVIOUS_FILE`. This is
+an example on how you can retrieve the previous actions results:
+
+```javascript
+// Include the FileSystem package to access file system files.
+const fs = require('fs')
+
+// Grab the full path of the file that contents previous actions results
+const filePath = process.env.TF_PREVIOUS_FILE
+
+// Read the file contents
+const fileContents = fs.readFileSync(filePath, 'utf8')
+
+// Conver the previous actions results to Javascript object
+const previousResults = JSON.parse(fileContents)
+```
 
 ---
 
