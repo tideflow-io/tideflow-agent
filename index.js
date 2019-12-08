@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 const program = require('commander')
+const colors = require('colors')
 const url = require('url')
 const os = require('os')
 const pkg = require('./package.json')
@@ -33,6 +34,25 @@ program.on('--help', function(){
   console.log('  $ tideflow-agent -c 16 -t agent-auth-token')
   console.log('  $ tideflow-agent --help')
   console.log('  $ tideflow-agent -h')
+
+  console.log('')
+  console.log('Environment variables:')
+  console.log('')
+  console.log(' - TF_AGENT_URL'.yellow)
+  console.log(`   Current value: ${process.env.TF_AGENT_URL || 'not set'}`.gray)
+  console.log('   Specify the URL to connect to the Tideflow\'s platform.')
+  console.log('   Optional. Defaults to localhost:1337 if no -u parameter set')
+  console.log('   Example: http://subdomain.example.com:1337')
+  console.log('')
+
+  console.log(' - TIDEFLOWIO_AGENT_TOKEN'.yellow)
+  console.log(`   Current value: ${process.env.TIDEFLOWIO_AGENT_TOKEN || 'not set'}`.gray)
+  console.log('   Specify authentication token.')
+  console.log('   Optional. Having the authentication token stored as an environment')
+  console.log('   variable allows users to run the agent without passing the -t parameter.')
+  console.log('   Example: d2a04f78-ff8a-4eb4-a12c-57fb7abf03a7')
+  console.log('')
+
 })
  
 program.parse(process.argv)
