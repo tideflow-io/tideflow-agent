@@ -28,9 +28,9 @@ module.exports.exec = (program) => {
 
   // Shows welcome messages
   console.log(pretty.logo(pjson))
-  console.log(` || Tideflow.io - agent ${pjson.version}`.blue)
-  console.log(` || Using ${concurrency} as concurrency`.yellow)
-  console.log(` || Target URL ${URL}`.yellow)
+  console.log(` || ${new Date()} Tideflow.io - agent ${pjson.version}`.blue)
+  console.log(` || ${new Date()} Using ${concurrency} as concurrency`.yellow)
+  console.log(` || ${new Date()} Target URL ${URL}`.yellow)
 
   const socket = io(`${URL}?token=${program.token}`)
 
@@ -76,32 +76,31 @@ module.exports.exec = (program) => {
 
   // Execute command
   socket.on('tf.agent.execute', function (req) {
-    console.log('RECEIVE')
-    console.log('RECEIVE')
-    console.log(req)
     if (!agent.authenticated) return
+    console.log(` => ${new Date()} ${req.execution} Execute`.blue)
     q.push(services.agent.execute(socket, 'tf.agent.execute', req))
   })
 
   socket.on('tf.agent.code_nodesfc', function(req) {
     if (!agent.authenticated) return
+    console.log(` => ${new Date()} ${req.execution} Node SFC`.blue)
     q.push(services.agent.codeNodeSfc(socket, 'tf.agent.code_nodesfc', req))
   })
   
   // Authorize agent
   socket.on('tf.authz', function (auth) {
     agent = Object.assign({authenticated: true}, agent, auth)
-    console.log(` || Agent ${auth.title} authorized`.green)
+    console.log(` || ${new Date()} Agent ${auth.title} authorized`.green)
   })
 
   // Show a connection lost message
   socket.on('reconnecting', function () {
-    console.error(` || Connection lost, reconnecting...`.red)
+    console.error(` || ${new Date()} Connection lost, reconnecting...`.red)
   })
 
   // Warm the user in case of error 
   socket.on('error', function (e) {
-    console.error(` || Error`.red)
-    console.error(` || ${e}`.red)
+    console.error(` || ${new Date()} Error`.red)
+    console.error(` || ${new Date()} ${e}`.red)
   })
 }

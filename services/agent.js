@@ -98,7 +98,7 @@ const codeNodeSfc = async (socket, topic, req) => {
     report.bulkResult(socket, req, result)
   }
   catch (ex) {
-    report.exception( socket, req, ex.toString() )
+    report.exception(socket, req, ex)
   }
   finally {
     fs.unlinkSync(codeFile)

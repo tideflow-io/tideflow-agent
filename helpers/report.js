@@ -18,7 +18,6 @@ const colors = require('colors')
  * @returns {Array} List of strings from the original input.
  */
 const parseStd = (input) => {
-
   // 
   if (!input) return []
   try {
@@ -42,7 +41,7 @@ module.exports.parseStd = parseStd
  * @param {String} stderr Command's stderr output
  */
 const progress = async (socket, originalMessage, stdout, stderr, date) => {
-  console.log(' || STDOUT/ERR. Reporting...'.yellow)
+  console.log(` || ${new Date()} STDOUT/ERR. Reporting...`.yellow)
 
   const res = Object.assign(originalMessage, {
     stdout: parseStd(stdout),
@@ -77,7 +76,7 @@ module.exports.progress = progress
  *  }
  */
 const bulkResult = async (socket, originalMessage, result) => {
-  console.log(' || BULK STDOUT/ERR. Reporting...'.yellow)
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.yellow)
   const res = Object.assign(originalMessage, result)
   await socket.emit('tf.notify.finishBulk', res)
 }
@@ -93,8 +92,7 @@ module.exports.bulkResult = bulkResult
  * @param {Object} res Object containing both stds
  */
 const result = (socket, originalMessage, res) => {
-  console.log(' || Command executed. Reporting...'.yellow)
-  
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.green)
   socket.emit('tf.notify.finish', Object.assign(originalMessage, {
     stdout: parseStd(res.stdout),
     stderr: parseStd(res.stderr)
@@ -110,9 +108,10 @@ module.exports.result = result
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} executionResult Catched exception
  */
-const exception = (socket, originalMessage, ex) => {
-  console.error(' || Command returned error'.red)
-  socket.emit('tf.notify.exception', Object.assign(originalMessage, {ex}))
+const exception = async (socket, originalMessage, ex) => {
+  console.error(` <= ${new Date()} ${originalMessage.execution} Error`.red)
+  const res = Object.assign(originalMessage, ex)
+  await socket.emit('tf.notify.finishBulk', res)
 }
 
 module.exports.exception = exception
