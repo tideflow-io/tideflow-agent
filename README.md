@@ -58,10 +58,26 @@ For example, if the command to run is `meow`, the agent will execute it as
 `meow --tf_previous <previous-tasks-output>`
 
 The previous task's output is an stringified representation of the following
-JSON array:
+JSON array format:
 
 ```json
-[ { "type" : "object", "data" : {} } ]
+[ 
+  { 
+    data: {
+      firstName: "Jose",
+      lastName: "Samantino",
+    },
+    files: [
+      {
+        fieldname: "file",
+        url: "https://...?token=....",
+        filename: "CV.pdf",
+        mimetype: "application/pdf"
+      }
+    ],
+    links: []
+  }
+]
 ```
 
 ### NodeJS SFC actions
