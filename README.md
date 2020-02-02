@@ -1,6 +1,6 @@
-# Tideflow's agent 
+# Tideflow's Self-hosted Runner 
 
-> With Tideflow's Agent, you can run workflow's task in your own computer via [TideFlow](https://www.tideflow.io)
+> With Tideflow's Self-hosted Runner, you can run workflow's task in your own server via [TideFlow](https://www.tideflow.io)
 
 For more information, visit [TideFlow.io](https://www.tideflow.io)
 
