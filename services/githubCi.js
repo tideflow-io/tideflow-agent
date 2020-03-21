@@ -1,14 +1,13 @@
-const git = require('simple-git/promise');
+const git = require('simple-git/promise')
 const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 const spawn = require('cross-spawn')
 const report = require('../helpers/report')
 
-const { createAppAuth } = require('@octokit/auth-app');
+const { createAppAuth } = require('@octokit/auth-app')
 
 /**
- * 
  * @param {Object} context Original socket request content with:
  * 
  * {
@@ -30,7 +29,7 @@ const { createAppAuth } = require('@octokit/auth-app');
  *  webhook: {} // Original webhook from Github
  * }
  */
-const appAuth = (context) => {
+const appAuth = context => {
   const { pem, secret, appId, clientId } = context.triggerService.config
   const { id } = context.webhook.installation
 
@@ -44,10 +43,12 @@ const appAuth = (context) => {
 }
 
 function cloneUrlWithToken(cloneUrl, token) {
-  return cloneUrl.replace('https://', `https://x-access-token:${token}@`);
+  return cloneUrl.replace('https://', `https://x-access-token:${token}@`)
 }
 
-const genTmpFolder = (subfix) => {
+module.exports.cloneUrlWithToken = cloneUrlWithToken
+
+const genTmpFolder = subfix => {
   const tmpPath = `${os.tmpdir}${path.sep}${subfix || new Date().getTime()}`
   
   if (fs.existsSync(tmpPath)) {
@@ -57,6 +58,8 @@ const genTmpFolder = (subfix) => {
   fs.mkdirSync(tmpPath)
   return tmpPath
 }
+
+module.exports.genTmpFolder = genTmpFolder
 
 const push = async (socket, topic, req) => {
   const triggerService = req.triggerService
@@ -161,6 +164,7 @@ const executionFinished = async (socket, topic, req) => {
   const tmpPath = genTmpFolder(req.execution)
   fs.removeSync(tmpPath)
 }
+
 module.exports.executionFinished = executionFinished
 
 const test_cmd = async (socket, topic, req) => {
@@ -231,4 +235,3 @@ const test_cmd = async (socket, topic, req) => {
 
 module.exports.test_cmd = test_cmd
 module.exports.run_cmd = test_cmd
-

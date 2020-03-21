@@ -2,15 +2,16 @@ const colors = require('colors')
 
 /**
  * Given an std output (either stdout or stderr) in either array or string
- * format, conver it to an array and remove empty lines.
+ * format, convert it to an array and remove empty lines.
  * 
  * For example, if a command outputs the following:
  * 
- * Command in progress...
+ * - Command in progress...
+ * - 
+ * - Please wait a moment.
+ * - 
  * 
- * Please wait a moment.
- * 
- * The filtered result must look like:
+ * The result must look like:
  * 
  * ['Command in progress...', 'Please wait a moment.']
  * 
@@ -26,6 +27,7 @@ const parseStd = (input) => {
       .filter(Boolean) || null
   }
   catch (ex) {
+    console.error(ex)
     return []
   }
 }
@@ -59,8 +61,7 @@ const progress = async (socket, originalMessage, stdout, stderr, date) => {
 module.exports.progress = progress
 
 /**
- * Reports the final result of an execution, with
- * all stds as an array
+ * Reports the final result of an execution, with all stds as an array
  * 
  * @param {Object} socket Socket's io socket that requested the execution
  * @param {Object} originalMessage Message that originally requested the execution
