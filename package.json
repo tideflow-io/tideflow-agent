@@ -43,7 +43,8 @@
     "simple-git": "^1.124.0",
     "socket.io-client": "^2.2.0",
     "tmp": "^0.1.0",
-    "update-notifier": "^4.1.0"
+    "update-notifier": "^4.1.0",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",
