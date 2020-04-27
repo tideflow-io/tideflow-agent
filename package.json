@@ -1,6 +1,6 @@
 {
   "name": "@tideflowio/tideflow-agent",
-  "version": "0.2.1",
+  "version": "0.6.3",
   "description": "Tideflow.io's agent",
   "main": "index.js",
   "keywords": [
