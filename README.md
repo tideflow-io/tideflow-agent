@@ -63,19 +63,19 @@ JSON array format:
 ```json
 [ 
   { 
-    data: {
-      firstName: "Jose",
-      lastName: "Samantino",
+    "data": {
+      "firstName": "Jose",
+      "lastName": "Samantino",
     },
-    files: [
+    "files": [
       {
-        fieldname: "file",
-        url: "https://...?token=....",
-        filename: "CV.pdf",
-        mimetype: "application/pdf"
+        "fieldname": "file",
+        "url": "https://...?token=....",
+        "filename": "CV.pdf",
+        "mimetype": "application/pdf"
       }
     ],
-    links: []
+    "links": []
   }
 ]
 ```
