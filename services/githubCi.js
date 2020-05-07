@@ -1,11 +1,54 @@
-const git = require('simple-git/promise');
+const git = require('simple-git/promise')
 const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 const spawn = require('cross-spawn')
 const report = require('../helpers/report')
 
-const genTmpFolder = (subfix) => {
+const { createAppAuth } = require('@octokit/auth-app')
+
+/**
+ * @param {Object} context Original socket request content with:
+ * 
+ * {
+ *  flow: string,
+ *  execution: string,
+ *  log: string,
+ *  step: string,
+ *  triggerService: {
+ *    _id: string,
+ *    type: string,
+ *    title: string,
+ *    description: string,
+ *    user: string,
+ *    config: {},
+ *    createdAt: date,
+ *    updatedAt: date,
+ *    details: {}
+ *  },
+ *  webhook: {} // Original webhook from Github
+ * }
+ */
+const appAuth = context => {
+  const { pem, secret, appId, clientId } = context.triggerService.config
+  const { id } = context.webhook.installation
+
+  return createAppAuth({
+    id: appId,
+    privateKey: pem,
+    clientId: clientId,
+    clientSecret: secret,
+    installationId: id
+  })({type: 'installation'})
+}
+
+function cloneUrlWithToken(cloneUrl, token) {
+  return cloneUrl.replace('https://', `https://x-access-token:${token}@`)
+}
+
+module.exports.cloneUrlWithToken = cloneUrlWithToken
+
+const genTmpFolder = subfix => {
   const tmpPath = `${os.tmpdir}${path.sep}${subfix || new Date().getTime()}`
   
   if (fs.existsSync(tmpPath)) {
@@ -16,13 +59,15 @@ const genTmpFolder = (subfix) => {
   return tmpPath
 }
 
+module.exports.genTmpFolder = genTmpFolder
+
 const push = async (socket, topic, req) => {
   const triggerService = req.triggerService
   const webhook = req.webhook
   const repo = webhook.repository.full_name
   const tmpPath = genTmpFolder(req.execution)
 
-  const sha = webhook.pullRequest ? webhook.pullRequest.head.sha : webhook.head_commit.id
+  const sha = webhook.head_commit.id
 
   report.progress(socket, req, `Clonning ${repo}`, null)
   report.progress(socket, req, `SHA ${sha}`, null)
@@ -30,7 +75,9 @@ const push = async (socket, topic, req) => {
 
   // Clone repository
   try {
-    await git().clone(`https://tideflow:${triggerService.config.secret}@github.com/${repo}`, tmpPath)
+    const auth = await appAuth(req)
+    let cloneUrl = cloneUrlWithToken(`https://github.com/${repo}`, auth.token)
+    await git().clone(cloneUrl, tmpPath)
     await git(tmpPath).checkout(sha)
     delete req.webhook
     report.result( socket, req,
@@ -46,12 +93,78 @@ const push = async (socket, topic, req) => {
 }
 
 module.exports.push = push
-module.exports.pullRequest = push
+
+const pullRequest = async (socket, topic, req) => {
+  const triggerService = req.triggerService
+  const webhook = req.webhook
+  const repo = webhook.repository.full_name
+  const tmpPath = genTmpFolder(req.execution)
+
+  const sha = webhook.pullRequest.head.sha
+
+  report.progress(socket, req, `Clonning ${repo}`, null)
+  report.progress(socket, req, `SHA ${sha}`, null)
+  report.progress(socket, req, `Temporal path ${tmpPath}`, null)
+
+  // Clone repository
+  try {
+    const auth = await appAuth(req)
+    let cloneUrl = cloneUrlWithToken(`https://github.com/${repo}`, auth.token)
+    await git().clone(cloneUrl, tmpPath)
+    await git(tmpPath).checkout(sha)
+    delete req.webhook
+    report.result( socket, req,
+      {
+        stderr: null,
+        stdout: 'Clone finished'
+      }
+    )
+  }
+  catch (ex) {
+    report.exception( socket, req, ex.toString() )
+  }
+}
+
+module.exports.pullRequest = pullRequest
+
+const checksuite = async (socket, topic, req) => {
+  const triggerService = req.triggerService
+  const webhook = req.webhook
+  const repo = webhook.repository.full_name
+  const tmpPath = genTmpFolder(req.execution)
+
+  const sha = webhook.check_suite.head_sha
+
+  report.progress(socket, req, `Clonning ${repo}`, null)
+  report.progress(socket, req, `SHA ${sha}`, null)
+  report.progress(socket, req, `Temporal path ${tmpPath}`, null)
+
+  // Clone repository
+  try {
+    const auth = await appAuth(req)
+    let cloneUrl = cloneUrlWithToken(`https://github.com/${repo}`, auth.token)
+    await git().clone(cloneUrl, tmpPath)
+    await git(tmpPath).checkout(sha)
+    delete req.webhook
+    report.result( socket, req,
+      {
+        stderr: null,
+        stdout: 'Clone finished'
+      }
+    )
+  }
+  catch (ex) {
+    report.exception( socket, req, ex.toString() )
+  }
+}
+
+module.exports.checksuite = checksuite
 
 const executionFinished = async (socket, topic, req) => {
   const tmpPath = genTmpFolder(req.execution)
   fs.removeSync(tmpPath)
 }
+
 module.exports.executionFinished = executionFinished
 
 const test_cmd = async (socket, topic, req) => {
@@ -122,4 +235,3 @@ const test_cmd = async (socket, topic, req) => {
 
 module.exports.test_cmd = test_cmd
 module.exports.run_cmd = test_cmd
-

@@ -15,7 +15,7 @@ const nodesfc = require('nodesfc')
  */
 const execute = (socket, topic, req) => {
   return new Promise((resolve, reject) => {
-
+    
     // Store code in tmp file
     const previousfile = tmp.tmpNameSync()
     const commandFile = tmp.tmpNameSync({
@@ -93,19 +93,27 @@ module.exports.execute = execute
  * @param {Object} req Original request that came fromthe platform
  */
 const codeNodeSfc = async (socket, topic, req) => {
-  const file = tmp.tmpNameSync()
-  fs.writeFileSync(file, req.code)
+  const codeFile = tmp.tmpNameSync()
+  fs.writeFileSync(codeFile, req.code)
+
+  const previousFile = tmp.tmpNameSync()
+  fs.writeFileSync(previousFile, req.previous)
 
   try {
-    let result = await nodesfc.init({file})
+    let result = await nodesfc.init({
+      file: codeFile,
+      env: {
+        TF_PREVIOUS_FILE: previousFile
+      }
+    })
     report.bulkResult(socket, req, result)
   }
   catch (ex) {
-    console.error({ex})
-    report.exception( socket, req, ex.toString() )
+    report.exception(socket, req, ex)
   }
   finally {
-    fs.unlinkSync(file)
+    fs.unlinkSync(codeFile)
+    fs.unlinkSync(previousFile)
   }
 }
 

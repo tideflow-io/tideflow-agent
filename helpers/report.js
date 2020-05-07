@@ -2,15 +2,16 @@ const colors = require('colors')
 
 /**
  * Given an std output (either stdout or stderr) in either array or string
- * format, conver it to an array and remove empty lines.
+ * format, convert it to an array and remove empty lines.
  * 
  * For example, if a command outputs the following:
  * 
- * Command in progress...
+ * - Command in progress...
+ * - 
+ * - Please wait a moment.
+ * - 
  * 
- * Please wait a moment.
- * 
- * The filtered result must look like:
+ * The result must look like:
  * 
  * ['Command in progress...', 'Please wait a moment.']
  * 
@@ -18,7 +19,6 @@ const colors = require('colors')
  * @returns {Array} List of strings from the original input.
  */
 const parseStd = (input) => {
-
   // 
   if (!input) return []
   try {
@@ -27,6 +27,7 @@ const parseStd = (input) => {
       .filter(Boolean) || null
   }
   catch (ex) {
+    console.error(ex)
     return []
   }
 }
@@ -42,7 +43,7 @@ module.exports.parseStd = parseStd
  * @param {String} stderr Command's stderr output
  */
 const progress = async (socket, originalMessage, stdout, stderr, date) => {
-  console.log(' || STDOUT/ERR. Reporting...'.yellow)
+  console.log(` || ${new Date()} STDOUT/ERR. Reporting...`.yellow)
 
   const res = Object.assign(originalMessage, {
     stdout: parseStd(stdout),
@@ -60,8 +61,7 @@ const progress = async (socket, originalMessage, stdout, stderr, date) => {
 module.exports.progress = progress
 
 /**
- * Reports the final result of an execution, with
- * all stds as an array
+ * Reports the final result of an execution, with all stds as an array
  * 
  * @param {Object} socket Socket's io socket that requested the execution
  * @param {Object} originalMessage Message that originally requested the execution
@@ -77,7 +77,7 @@ module.exports.progress = progress
  *  }
  */
 const bulkResult = async (socket, originalMessage, result) => {
-  console.log(' || BULK STDOUT/ERR. Reporting...'.yellow)
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.yellow)
   const res = Object.assign(originalMessage, result)
   await socket.emit('tf.notify.finishBulk', res)
 }
@@ -93,8 +93,7 @@ module.exports.bulkResult = bulkResult
  * @param {Object} res Object containing both stds
  */
 const result = (socket, originalMessage, res) => {
-  console.log(' || Command executed. Reporting...'.yellow)
-  
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.green)
   socket.emit('tf.notify.finish', Object.assign(originalMessage, {
     stdout: parseStd(res.stdout),
     stderr: parseStd(res.stderr)
@@ -110,10 +109,10 @@ module.exports.result = result
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} executionResult Catched exception
  */
-const exception = (socket, originalMessage, ex) => {
-  console.log(' || Command returned error'.red)
-
-  socket.emit('tf.notify.exception', Object.assign(originalMessage, {ex}))
+const exception = async (socket, originalMessage, ex) => {
+  console.error(` <= ${new Date()} ${originalMessage.execution} Error`.red)
+  const res = Object.assign(originalMessage, ex)
+  await socket.emit('tf.notify.finishBulk', res)
 }
 
 module.exports.exception = exception
