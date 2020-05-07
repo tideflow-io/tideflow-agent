@@ -18,19 +18,30 @@ const execute = (socket, topic, req) => {
 
     // Store code in tmp file
     const previousfile = tmp.tmpNameSync()
-    const commandFile = tmp.tmpNameSync()
+    const commandFile = tmp.tmpNameSync({
+      postfix: process.platform === 'win32' ? '.bat' : '.sh'
+    })
     fs.writeFileSync(commandFile, req.command)
 
     // Given the command to execute, get the program's name and its parameters
     // in order to pass them to child_process.spawn
-    const command = process.platform === 'win32' ? 'sh' : 'bash'
-    let parameters = [commandFile]
-
+    const command = process.platform === 'win32' ? 'start' : 'bash'
+    let parameters = []
+    
     // Check if the command is attaching the output from the previous flow's step
     if (req.previous) {
       fs.writeFileSync(previousfile, req.previous)
-      parameters.push('--tf_previous_file')
-      parameters.push(previousfile)
+      if ( process.platform === 'win32' ) {
+        parameters.push('')
+        parameters.push(commandFile)
+        parameters.push('--tf_previous_file')
+        parameters.push(previousfile)
+      }
+      else {
+        parameters.push(commandFile)
+        parameters.push('--tf_previous_file')
+        parameters.push(previousfile)
+      }
     }
 
     // Execute the command in a child process so that stds can be monitored
