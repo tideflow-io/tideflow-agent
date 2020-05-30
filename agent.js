@@ -21,7 +21,7 @@ module.exports.exec = (program) => {
 
   let agent = {}
 
-  const URL = program.url || process.env.TF_AGENT_URL || 'http://localhost:1337'
+  const URL = program.url || process.env.TF_AGENT_URL || 'http://localhost:3000'
 
   const parse = url.parse(URL)
   if (!parse.hostname) { throw new Error(`"${URL}" is not a valid url`) }

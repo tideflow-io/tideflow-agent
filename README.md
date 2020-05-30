@@ -28,11 +28,6 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 ## Environment variables
 
 ```bash
-# Specify the URL to connect to the Tideflow's platform.
-# Optional. Defaults to localhost:1337 if no -u parameter set
-# Example: http://subdomain.example.com:1337
-TF_AGENT_URL
-
 # Specify authentication token.
 # Optional. Having the authentication token stored as an environment
 # variable allows users to run the agent without passing the -t parameter.
