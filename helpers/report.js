@@ -76,10 +76,11 @@ module.exports.progress = progress
  *    code: number
  *  }
  */
-const bulkResult = async (socket, originalMessage, result) => {
-  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.yellow)
+const bulkResult = async (socket, originalMessage, result, topic) => {
+  if (!originalMessage) originalMessage = {}
+  console.error(` <= ${new Date()} ${originalMessage.execution || ''} Reporting`.yellow)
   const res = Object.assign(originalMessage, result)
-  await socket.emit('tf.notify.finishBulk', res)
+  await socket.emit(topic ? `${topic}.res` : 'tf.notify.finishBulk', res)
 }
 
 module.exports.bulkResult = bulkResult

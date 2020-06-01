@@ -28,11 +28,27 @@ module.exports.exec = (program) => {
 
   // Shows welcome messages
   console.log(pretty.logo(pjson))
-  console.log(` || ${new Date()} Tideflow.io - agent ${pjson.version}`.blue)
-  console.log(` || ${new Date()} Using ${concurrency} as concurrency`.yellow)
-  console.log(` || ${new Date()} Target URL ${URL}`.yellow)
+  console.log(` !! ${new Date()} Tideflow.io - agent ${pjson.version}`.blue)
+  console.log(` !! ${new Date()} Using ${concurrency} as concurrency`.yellow)
+  console.log(` !! ${new Date()} Target URL ${URL}`.yellow)
 
   const socket = io(`${URL}?token=${program.token}`)
+
+  socket.on('tf.browser', (req, cb) => {
+    if (!agent.authenticated) return cb('not-authorized')
+    try {
+      const result = services.explorer.browse(socket, 'tf.browser', req)
+      cb(result)
+    }
+    catch (ex) {
+      cb(ex)
+    }
+  })
+
+  socket.on('tf.spreadsheets.pushRow', (req) => {
+    if (!agent.authenticated) return
+    q.push(services.spreadsheets.pushRow(socket, 'tf.spreadsheets.pushRow', req))
+  })
 
   socket.on('tf.githubCi.pullRequest', (req) => {
     if (!agent.authenticated) return
@@ -90,17 +106,17 @@ module.exports.exec = (program) => {
   // Authorize agent
   socket.on('tf.authz', function (auth) {
     agent = Object.assign({authenticated: true}, agent, auth)
-    console.log(` || ${new Date()} Agent ${auth.title} authorized`.green)
+    console.log(` !! ${new Date()} Agent ${auth.title} authorized`.green)
   })
 
   // Show a connection lost message
   socket.on('reconnecting', function () {
-    console.error(` || ${new Date()} Connection lost, reconnecting...`.red)
+    console.error(` !! ${new Date()} Connection lost, reconnecting...`.red)
   })
 
   // Warm the user in case of error 
   socket.on('error', function (e) {
-    console.error(` || ${new Date()} Error`.red)
-    console.error(` || ${new Date()} ${e}`.red)
+    console.error(` !! ${new Date()} Error`.red)
+    console.error(` !! ${new Date()} ${e}`.red)
   })
 }

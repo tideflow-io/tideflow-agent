@@ -29,7 +29,7 @@ program
  
 program.on('--help', function(){
   console.log('')
-  console.log('Examples:')
+  console.log('Examples:'.underline)
   console.log('')
   console.log('  $ tideflow-agent -u http://mytideflow.example.com -t agent-auth-token')
   console.log('  $ tideflow-agent -c 16 -t agent-auth-token')
@@ -37,13 +37,13 @@ program.on('--help', function(){
   console.log('  $ tideflow-agent -h')
 
   console.log('')
-  console.log('Environment variables:')
+  console.log('Environment variables:'.underline)
   console.log('')
   console.log(' - TF_AGENT_URL'.yellow)
   console.log(`   Current value: ${process.env.TF_AGENT_URL || 'not set'}`.gray)
   console.log('   Specify the URL to connect to the Tideflow\'s platform.')
   console.log('   Optional. Defaults to localhost:3000 if no -u parameter set')
-  console.log('   Example: http://subdomain.example.com:3000')
+  console.log('   Example: https://subdomain.example.com')
   console.log('')
 
   console.log(' - TIDEFLOWIO_AGENT_TOKEN'.yellow)
