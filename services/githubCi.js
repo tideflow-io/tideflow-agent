@@ -224,7 +224,6 @@ const test_cmd = async (socket, topic, req) => {
         
         // Report Exit code
         sp.on('exit', code => {
-          console.log(`exit ${code}`)
           if (code) {
             erroed = true
             error = `EXIT CODE ${code}`

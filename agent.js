@@ -28,9 +28,9 @@ module.exports.exec = (program) => {
 
   // Shows welcome messages
   console.log(pretty.logo(pjson))
-  console.log(` || ${new Date()} Tideflow.io - agent ${pjson.version}`.blue)
-  console.log(` || ${new Date()} Using ${concurrency} as concurrency`.yellow)
-  console.log(` || ${new Date()} Target URL ${URL}`.yellow)
+  console.log(` || ${new Date()} Tideflow.io - agent ${pjson.version}`)
+  console.log(` || ${new Date()} Using ${concurrency} as concurrency`)
+  console.log(` || ${new Date()} Target URL ${URL}`)
 
   const socket = io(`${URL}?token=${program.token}`)
 
@@ -77,30 +77,30 @@ module.exports.exec = (program) => {
   // Execute command
   socket.on('tf.agent.execute', function (req) {
     if (!agent.authenticated) return
-    console.log(` => ${new Date()} ${req.execution} Execute`.blue)
+    console.log(` => ${new Date()} ${req.execution} Execute`)
     q.push(services.agent.execute(socket, 'tf.agent.execute', req))
   })
 
   socket.on('tf.agent.code_nodesfc', function(req) {
     if (!agent.authenticated) return
-    console.log(` => ${new Date()} ${req.execution} Node SFC`.blue)
+    console.log(` => ${new Date()} ${req.execution} Node SFC`)
     q.push(services.agent.codeNodeSfc(socket, 'tf.agent.code_nodesfc', req))
   })
   
   // Authorize agent
   socket.on('tf.authz', function (auth) {
     agent = Object.assign({authenticated: true}, agent, auth)
-    console.log(` || ${new Date()} Agent ${auth.title} authorized`.green)
+    console.log(` || ${new Date()} Agent ${auth.title} authorized`)
   })
 
   // Show a connection lost message
   socket.on('reconnecting', function () {
-    console.error(` || ${new Date()} Connection lost, reconnecting...`.red)
+    console.error(` || ${new Date()} Connection lost, reconnecting...`)
   })
 
   // Warm the user in case of error 
   socket.on('error', function (e) {
-    console.error(` || ${new Date()} Error`.red)
-    console.error(` || ${new Date()} ${e}`.red)
+    console.error(` || ${new Date()} Error`)
+    console.error(` || ${new Date()} ${e}`)
   })
 }
