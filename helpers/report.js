@@ -42,18 +42,20 @@ module.exports.parseStd = parseStd
  * @param {String} stdout Command's stdout output
  * @param {String} stderr Command's stderr output
  */
-const progress = async (socket, originalMessage, stdout, stderr, date) => {
+const progress = async (socket, originalMessage, stdLines, date) => {
   console.log(` || ${new Date()} STDOUT/ERR. Reporting...`.yellow)
 
   const res = Object.assign(originalMessage, {
-    stdout: parseStd(stdout),
-    stderr: parseStd(stderr),
+    stdLines: stdLines.map(l => {
+      if (!l.d) l.d = new Date()
+      return l
+    }),
     date: date || null
   })
 
   // Make sure the agent doesn't make a report to the server, unless there's
   // an actual std output to be reported.
-  if (!res.stdout && !res.stderr) { return }
+  if (!res.stdLines || !res.stdLines.length) { return }
 
   await socket.emit('tf.notify.progress', res)
 }
@@ -79,7 +81,7 @@ module.exports.progress = progress
 const bulkResult = async (socket, originalMessage, result) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.yellow)
   const res = Object.assign(originalMessage, result)
-  await socket.emit('tf.notify.finishBulk', res)
+  await socket.emit('tf.notify.finishBulk', Object.assign(res, {error: false}))
 }
 
 module.exports.bulkResult = bulkResult
@@ -94,10 +96,7 @@ module.exports.bulkResult = bulkResult
  */
 const result = (socket, originalMessage, res) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`.green)
-  socket.emit('tf.notify.finish', Object.assign(originalMessage, {
-    stdout: parseStd(res.stdout),
-    stderr: parseStd(res.stderr)
-  }))
+  socket.emit('tf.notify.finish', Object.assign(originalMessage, res))
 }
 
 module.exports.result = result
@@ -110,9 +109,10 @@ module.exports.result = result
  * @param {Object} executionResult Catched exception
  */
 const exception = async (socket, originalMessage, ex) => {
+  console.log(ex)
   console.error(` <= ${new Date()} ${originalMessage.execution} Error`.red)
   const res = Object.assign(originalMessage, ex)
-  await socket.emit('tf.notify.finishBulk', res)
+  await socket.emit('tf.notify.finishBulk', Object.assign(res, {error: true}))
 }
 
 module.exports.exception = exception

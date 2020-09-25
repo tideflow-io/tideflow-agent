@@ -69,9 +69,9 @@ const push = async (socket, topic, req) => {
 
   const sha = webhook.head_commit.id
 
-  report.progress(socket, req, `Clonning ${repo}`, null)
-  report.progress(socket, req, `SHA ${sha}`, null)
-  report.progress(socket, req, `Temporal path ${tmpPath}`, null)
+  report.progress(socket, req, [{m: `Clonning ${repo}`}])
+  report.progress(socket, req, [{m: `SHA ${sha}`}])
+  report.progress(socket, req, [{m: `Temporal path ${tmpPath}`}])
 
   // Clone repository
   try {
@@ -82,13 +82,18 @@ const push = async (socket, topic, req) => {
     delete req.webhook
     report.result( socket, req,
       {
-        stderr: null,
-        stdout: 'Clone finished'
+        stdLines: [
+          { m: 'Clone finished', err: false, d: new Date() }
+        ]
       }
     )
   }
   catch (ex) {
-    report.exception( socket, req, ex.toString() )
+    report.exception( socket, req, {
+      stdLines: [
+        { m: ex.toString(), err: true, d: new Date() }
+      ]
+    } )
   }
 }
 
@@ -102,9 +107,9 @@ const pullRequest = async (socket, topic, req) => {
 
   const sha = webhook.pullRequest.head.sha
 
-  report.progress(socket, req, `Clonning ${repo}`, null)
-  report.progress(socket, req, `SHA ${sha}`, null)
-  report.progress(socket, req, `Temporal path ${tmpPath}`, null)
+  report.progress(socket, req, [{m: `Clonning ${repo}`}])
+  report.progress(socket, req, [{m: `SHA ${sha}`}])
+  report.progress(socket, req, [{m: `Temporal path ${tmpPath}`}])
 
   // Clone repository
   try {
@@ -115,13 +120,18 @@ const pullRequest = async (socket, topic, req) => {
     delete req.webhook
     report.result( socket, req,
       {
-        stderr: null,
-        stdout: 'Clone finished'
+        stdLines: [
+          { m: 'Clone finished', err: false, d: new Date() }
+        ]
       }
     )
   }
   catch (ex) {
-    report.exception( socket, req, ex.toString() )
+    report.exception( socket, req, {
+      stdLines: [
+        { m: ex.toString(), err: true, d: new Date() }
+      ]
+    })
   }
 }
 
@@ -135,9 +145,9 @@ const checksuite = async (socket, topic, req) => {
 
   const sha = webhook.check_suite.head_sha
 
-  report.progress(socket, req, `Clonning ${repo}`, null)
-  report.progress(socket, req, `SHA ${sha}`, null)
-  report.progress(socket, req, `Temporal path ${tmpPath}`, null)
+  report.progress(socket, req, [{m: `Clonning ${repo}`}])
+  report.progress(socket, req, [{m: `SHA ${sha}`}])
+  report.progress(socket, req, [{m: `Temporal path ${tmpPath}`}])
 
   // Clone repository
   try {
@@ -148,13 +158,18 @@ const checksuite = async (socket, topic, req) => {
     delete req.webhook
     report.result( socket, req,
       {
-        stderr: null,
-        stdout: 'Clone finished'
+        stdLines: [
+          { m: 'Clone finished', err: false, d: new Date() }
+        ]
       }
     )
   }
   catch (ex) {
-    report.exception( socket, req, ex.toString() )
+    report.exception( socket, req, {
+      stdLines: [
+        { m: ex.toString(), err: true, d: new Date() }
+      ]
+    } )
   }
 }
 
@@ -187,16 +202,21 @@ const test_cmd = async (socket, topic, req) => {
 
       if (erroed) return reject()
 
-      report.progress(socket, req, command, null)
+      report.progress(socket, req, [{m: `$ ${command}`}])
 
       try {
-        let sp = spawn(command, { cwd, stdio: ['inherit', 'pipe', 'pipe'] })
+        let cmdarray = command.split(" ");
+        let sp = spawn(cmdarray.shift(), cmdarray, { cwd, stdio: ['inherit', 'pipe', 'pipe'] })
 
         // Report stdout
-        sp.stdout.on('data', data => report.progress(socket, req, data.toString(), null))
+        sp.stdout.on('data', data => {
+          report.progress(socket, req, [{m:data.toString()}])
+        })
         
         // Report stderr
-        sp.stderr.on('data', data => report.progress(socket, req, null, data.toString()))
+        sp.stderr.on('data', data => {
+          report.progress(socket, req, [{m:data.toString(), err: true}])
+        })
         
         sp.on('error', error => {
           return reject(error)
@@ -223,13 +243,13 @@ const test_cmd = async (socket, topic, req) => {
   try {
     await Promise.all(processCommands)
     report.result(socket, req,
-      {
-        stdout: 'Execution finished'
-      }
+      {stdLines: [{ m: 'Execution finished', err: false, d: new Date() }]}
     )
   }
   catch (ex) {
-    report.exception(socket, req, ex)
+    report.exception(socket, req,
+      {stdLines: [{ m: ex.toString(), err: true, d: new Date() }]}
+    )
   }
 }
 

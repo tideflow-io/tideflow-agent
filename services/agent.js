@@ -49,12 +49,12 @@ const execute = (socket, topic, req) => {
 
     // Report stdout
     sp.stdout.on('data', data =>
-      report.progress(socket, req, data.toString(), null)
+      report.progress(socket, req, [{m: data.toString()}])
     )
     
     // Report stderr
     sp.stderr.on('data', data =>
-      report.progress(socket, req, null, data.toString())
+      report.progress(socket, req, [{m: data.toString(), err: true}])
     )
     
     // Report Exit code
@@ -62,10 +62,7 @@ const execute = (socket, topic, req) => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
       report.result( socket, req,
-        {
-          stderr: code ? `EXIT CODE ${code}` : null,
-          stdout: code ? null : `EXIT CODE ${code}`
-        }
+        [{m: `EXIT CODE ${code}`, err: !!code}]
       )
 
       return code ? reject(code) : resolve()
@@ -75,15 +72,17 @@ const execute = (socket, topic, req) => {
     sp.on('error', (error) => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
-      report.exception( socket, req, error.toString() )
+      report.exception( socket, req, {
+        stdLines: [
+          { m: error.toString(), err: true, d: new Date() }
+        ]
+      } )
       return reject(error)
     })
   })
 }
 
 module.exports.execute = execute
-
-
 
 /**
  * Handles the execution of nodejs code sent from the platform
@@ -109,7 +108,11 @@ const codeNodeSfc = async (socket, topic, req) => {
     report.bulkResult(socket, req, result)
   }
   catch (ex) {
-    report.exception(socket, req, ex)
+    report.exception(socket, req, {
+      stdLines: [
+        { m: ex.toString(), err: true, d: new Date() }
+      ]
+    })
   }
   finally {
     fs.unlinkSync(codeFile)
