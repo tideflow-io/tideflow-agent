@@ -112,9 +112,9 @@ const codeNodeSfc = async (socket, topic, req) => {
   const codeFile = tmp.tmpNameSync()
   fs.writeFileSync(codeFile, req.code)
 
+
   const previousFile = tmp.tmpNameSync()
   fs.writeFileSync(previousFile, req.previous)
-
   try {
     let result = await nodesfc.init({
       file: codeFile,
@@ -125,6 +125,7 @@ const codeNodeSfc = async (socket, topic, req) => {
     report.bulkResult(socket, req, (result.stdLines||[]).map(l => {
       return { m: l.output, err: l.err, d: l.date || new Date() }
     }))
+
   }
   catch (ex) {
     report.exception(socket, req, [

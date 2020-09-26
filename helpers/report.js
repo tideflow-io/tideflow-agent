@@ -80,7 +80,7 @@ module.exports.progress = progress
  */
 const bulkResult = async (socket, originalMessage, result) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`)
-  const res = Object.assign(originalMessage, result)
+  const res = Object.assign({}, originalMessage, {stdLines:result})
   await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: false}))
 }
 
@@ -110,7 +110,7 @@ module.exports.result = result
  */
 const exception = async (socket, originalMessage, ex) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Error`)
-  const res = Object.assign(originalMessage, ex)
+  const res = Object.assign({}, originalMessage, {stdLines:result})
   await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: true}))
 }
 
