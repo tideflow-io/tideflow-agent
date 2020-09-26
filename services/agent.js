@@ -62,6 +62,9 @@ const execute = (socket, topic, req) => {
 
     // Execute the command in a child process so that stds can be monitored
     let cwd = genTmpFolder(req.execution)
+
+    report.progress(socket, req, [{m: `$ ${command} ${parameters.join(' ')}`}])
+
     let sp = spawn(command, parameters, { cwd })
 
     // Report stdout
