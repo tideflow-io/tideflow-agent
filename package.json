@@ -36,7 +36,7 @@
     "@octokit/auth-app": "^2.4.5",
     "commander": "^4.0.1",
     "cross-spawn": "^7.0.2",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.1",
     "nodesfc": "^0.7.2",
     "queue": "^6.0.1",
     "simple-git": "^1.124.0",
