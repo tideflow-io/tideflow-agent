@@ -247,7 +247,9 @@ const test_cmd = async (socket, topic, req) => {
   }
   catch (ex) {
     report.exception(socket, req,
-      {stdLines: [{ m: ex.toString(), err: true, d: new Date() }]}
+      [
+        { m: ex.toString(), err: true, d: new Date() }
+      ]
     )
   }
 }
