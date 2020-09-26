@@ -1,39 +1,3 @@
-const colors = require('colors')
-
-/**
- * Given an std output (either stdout or stderr) in either array or string
- * format, convert it to an array and remove empty lines.
- * 
- * For example, if a command outputs the following:
- * 
- * - Command in progress...
- * - 
- * - Please wait a moment.
- * - 
- * 
- * The result must look like:
- * 
- * ['Command in progress...', 'Please wait a moment.']
- * 
- * @param {Array|string} input std to be converted into a filtered array.
- * @returns {Array} List of strings from the original input.
- */
-const parseStd = (input) => {
-  // 
-  if (!input) return []
-  try {
-    return (Array.isArray(input) ? input : input.toString().split('\n'))
-      .map(l => l.trim())
-      .filter(Boolean) || null
-  }
-  catch (ex) {
-    console.error(ex)
-    return []
-  }
-}
-
-module.exports.parseStd = parseStd
-
 /**
  * Reports stds outputed by the in-execution command.
  * 

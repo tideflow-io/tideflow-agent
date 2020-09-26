@@ -1,6 +1,5 @@
 const pjson = require('./package.json')
 const io = require('socket.io-client')
-const colors = require('colors')
 const url = require('url')
 const pretty = require('./helpers/pretty')
 const services = require('./services')

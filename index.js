@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict'
 const program = require('commander')
-const colors = require('colors')
 const url = require('url')
 const os = require('os')
 const pkg = require('./package.json')
