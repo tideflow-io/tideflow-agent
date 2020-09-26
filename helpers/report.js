@@ -45,7 +45,7 @@ module.exports.parseStd = parseStd
 const progress = async (socket, originalMessage, stdLines, date) => {
   console.log(` || ${new Date()} STDOUT/ERR. Reporting...`)
 
-  const res = Object.assign(originalMessage, {
+  const res = Object.assign({}, originalMessage, {
     stdLines: stdLines.map(l => {
       if (!l.d) l.d = new Date()
       return l
@@ -81,7 +81,7 @@ module.exports.progress = progress
 const bulkResult = async (socket, originalMessage, result) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`)
   const res = Object.assign(originalMessage, result)
-  await socket.emit('tf.notify.finishBulk', Object.assign(res, {error: false}))
+  await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: false}))
 }
 
 module.exports.bulkResult = bulkResult
@@ -96,7 +96,7 @@ module.exports.bulkResult = bulkResult
  */
 const result = (socket, originalMessage, res) => {
   console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`)
-  socket.emit('tf.notify.finish', Object.assign(originalMessage, res))
+  socket.emit('tf.notify.finish', Object.assign({}, originalMessage, res))
 }
 
 module.exports.result = result
@@ -109,10 +109,9 @@ module.exports.result = result
  * @param {Object} executionResult Catched exception
  */
 const exception = async (socket, originalMessage, ex) => {
-  console.log(ex)
   console.error(` <= ${new Date()} ${originalMessage.execution} Error`)
   const res = Object.assign(originalMessage, ex)
-  await socket.emit('tf.notify.finishBulk', Object.assign(res, {error: true}))
+  await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: true}))
 }
 
 module.exports.exception = exception
