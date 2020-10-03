@@ -33,6 +33,12 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 # variable allows users to run the agent without passing the -t parameter.
 # Example: d2a04f78-ff8a-4eb4-a12c-57fb7abf03a7
 TIDEFLOW_AGENT_TOKEN
+
+# Specify the URL to connect to the Tideflow's platform.
+# Optional. Having the URL stored as an environment
+# variable allows users to run the agent without passing the -u parameter.
+# Example: http://subdomain.example.com:3000
+TIDEFLOW_AGENT_URL
 ```
 
 ## How to process data from previous tasks
