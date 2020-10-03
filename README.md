@@ -79,7 +79,7 @@ The content of such file is a JSON object, with a format similar to:
         "files": [
           {
             "fileName": "my-first-workflow-ifg.json",
-            "data": "..."
+            "url": "http://localhost:3000/download?type=actionFile&token=eyJhbGciO2A"
           }
         ]
       },
