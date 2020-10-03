@@ -43,9 +43,6 @@ TIDEFLOW_AGENT_URL
 
 ## How to process data from previous tasks
 
-Each of the predecesor tasks results is represented as an array element with
-two root properties:
-
 - **type**: an string that defines the kind of data retuned by the previous
 step (object, array, file, etc)
 - **data**: an object containing the task's result.
