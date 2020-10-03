@@ -140,5 +140,5 @@ GNU GENERAL PUBLIC LICENSE
 
 ## Developer Resources
 
-- Documentation: https://docs.tideflow.io/docs/services-agent
+- Documentation: https://docs.tideflow.io
 - Contribute: https://docs.tideflow.io/docs/contribute
