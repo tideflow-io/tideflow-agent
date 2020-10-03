@@ -46,52 +46,80 @@ step (object, array, file, etc)
 
 ### Command actions
 
-The result from previous tasks are sent to the agent commands via the parameter
-`--tf_previous`. 
+It's possible that the agent will receive preivous tasks results. This is
+defined in the workflow's task parameters.
+
+The result from previous tasks are stored in a temporal file. This file's
+absolute path is passed as a parameter called "tideflow_previous_file" to the
+command to be executed.
 
 For example, if the command to run is `meow`, the agent will execute it as
-`meow --tf_previous <previous-tasks-output>`
+`meow --tideflow_previous_file "/tmp/random_file_name"`
 
-The previous task's output is an stringified representation of the following
-JSON array format:
+The content of such file is a JSON object, with a format similar to:
 
 ```json
-[ 
-  { 
-    "data": {
-      "firstName": "Jose",
-      "lastName": "Samantino",
+{
+  "execution": {
+    "_id": "neL9r33vm38txn9e6"
+  },
+  "tasks": {
+    "the-task-id": {
+      "_id": "iesFwrdTtBToRRBzB",
+      "stepIndex": 1,
+      "type": "file",
+      "event": "read-file",
+      "createdAt": "2020-10-03T15:55:08.637Z",
+      "status": "success",
+      "result": {
+        "files": [
+          {
+            "fileName": "my-first-workflow-ifg.json",
+            "data": "..."
+          }
+        ]
+      },
+      "updatedAt": "2020-10-03T15:55:08.650Z"
     },
-    "files": [
-      {
-        "fieldname": "file",
-        "url": "https://...?token=....",
-        "filename": "CV.pdf",
-        "mimetype": "application/pdf"
-      }
-    ],
-    "links": []
+    "trigger": {
+      "_id": "qJucoXaWaEJqcazoe",
+      "stepIndex": "trigger",
+      "type": "endpoint",
+      "event": "called",
+      "createdAt": "2020-10-03T15:55:08.629Z",
+      "status": "success",
+      "result": {
+        "data": {
+          "name": "Jose",
+          "location": {
+            "lat": 42.8867647,
+            "lon": -9.2716399
+          }
+        }
+      },
+      "updatedAt": "2020-10-03T15:55:08.633Z"
+    }
   }
-]
+}
 ```
 
 ### NodeJS SFC actions
 
 The result from previous tasks are stored in a file. You can get the absolute
-path to this file in a environment variable called `TF_PREVIOUS_FILE`. This is
-an example on how you can retrieve the previous actions results:
+path to this file in a environment variable called `TIDEFLOW_PREVIOUS_FILE`.
+This is an example on how you can retrieve the previous actions results:
 
 ```javascript
-// Include the FileSystem package to access file system files.
+// Include the FileSystem package to read files.
 const fs = require('fs')
 
-// Grab the full path of the file that contents previous actions results
-const filePath = process.env.TF_PREVIOUS_FILE
+// Grab the full path of the file that contents previous tasks results
+const filePath = process.env.TIDEFLOW_PREVIOUS_FILE
 
 // Read the file contents
 const fileContents = fs.readFileSync(filePath, 'utf8')
 
-// Conver the previous actions results to Javascript object
+// Conver the previous tasks results to Javascript object
 const previousResults = JSON.parse(fileContents)
 ```
 

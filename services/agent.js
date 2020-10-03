@@ -50,13 +50,13 @@ const execute = (socket, topic, req) => {
       if ( process.platform === 'win32' ) {
         parameters.push('')
         parameters.push(commandFile)
-        parameters.push('--tf_previous_file')
-        parameters.push(previousfile)
+        parameters.push('--tideflow_previous_file')
+        parameters.push(`"${previousfile}"`)
       }
       else {
         parameters.push(commandFile)
-        parameters.push('--tf_previous_file')
-        parameters.push(previousfile)
+        parameters.push('--tideflow_previous_file')
+        parameters.push(`"${previousfile}"`)
       }
     }
 
@@ -122,7 +122,7 @@ const codeNodeSfc = async (socket, topic, req) => {
     let result = await nodesfc.init({
       file: codeFile,
       env: {
-        TF_PREVIOUS_FILE: previousFile
+        TIDEFLOW_PREVIOUS_FILE: previousFile
       }
     })
     report.bulkResult(socket, req, (result.stdLines||[]).map(l => {
