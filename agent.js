@@ -25,7 +25,7 @@ module.exports.exec = (program) => {
   console.log(` || ${new Date()} Using ${concurrency} as concurrency`)
   console.log(` || ${new Date()} Target URL ${program.url}`)
 
-  const socket = io(`${URL}?token=${program.token}`)
+  const socket = io(`${program.url}?token=${program.token}`)
 
   socket.on('tf.githubCi.pullRequest', (req) => {
     if (!agent.authenticated) return
