@@ -1,6 +1,6 @@
 {
   "name": "@tideflowio/tideflow-agent",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "Tideflow.io's agent",
   "main": "index.js",
   "keywords": [
@@ -34,7 +34,7 @@
   "homepage": "https://github.com/tideflow-io/tideflow-agent",
   "dependencies": {
     "@octokit/auth-app": "^2.4.5",
-    "commander": "^4.0.1",
+    "commander": "^6.1.0",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^9.0.1",
     "nodesfc": "^0.8.0",
