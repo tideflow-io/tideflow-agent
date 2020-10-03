@@ -32,7 +32,7 @@ npx @tideflowio/tideflow-agent -t [token] -u tideflow.example.com
 # Optional. Having the authentication token stored as an environment
 # variable allows users to run the agent without passing the -t parameter.
 # Example: d2a04f78-ff8a-4eb4-a12c-57fb7abf03a7
-TIDEFLOWIO_AGENT_TOKEN
+TIDEFLOW_AGENT_TOKEN
 ```
 
 ## How to process data from previous tasks

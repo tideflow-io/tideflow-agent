@@ -1,6 +1,5 @@
 const pjson = require('./package.json')
 const io = require('socket.io-client')
-const url = require('url')
 const pretty = require('./helpers/pretty')
 const services = require('./services')
 const os = require('os')
@@ -19,17 +18,12 @@ module.exports.exec = (program) => {
   })
 
   let agent = {}
-
-  const URL = program.url || process.env.TF_AGENT_URL || 'http://localhost:3000'
-
-  const parse = url.parse(URL)
-  if (!parse.hostname) { throw new Error(`"${URL}" is not a valid url`) }
-
+  
   // Shows welcome messages
   console.log(pretty.logo(pjson))
   console.log(` || ${new Date()} Tideflow.io - agent ${pjson.version}`)
   console.log(` || ${new Date()} Using ${concurrency} as concurrency`)
-  console.log(` || ${new Date()} Target URL ${URL}`)
+  console.log(` || ${new Date()} Target URL ${program.url}`)
 
   const socket = io(`${URL}?token=${program.token}`)
 
