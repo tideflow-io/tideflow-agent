@@ -28,7 +28,7 @@
     "url": "https://github.com/tideflow-io/tideflow-agent/graphs/contributors"
   },
   "engines": {
-    "node": ">=10"
+    "node" : ">=12.18.3"
   },
   "license": "MIT",
   "homepage": "https://github.com/tideflow-io/tideflow-agent",
