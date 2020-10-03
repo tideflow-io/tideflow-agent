@@ -56,7 +56,8 @@ The result from previous tasks are stored in a temporal file. This file's
 absolute path is passed as a parameter called "tideflow_previous_file" to the
 command to be executed.
 
-For example, if the command to run is `meow`, the agent will execute it as
+For example, if the command to run is `meow`, the agent will execute it as:
+
 `meow --tideflow_previous_file "/tmp/random_file_name"`
 
 The content of such file is a JSON object, with a format similar to:
