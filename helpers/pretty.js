@@ -1,5 +1,5 @@
-const colors = require('colors')
-console.log({colors})
+const colors = require('lodash')
+console.log(colors)
 /**
  * Returns a pretty logo for terminal
  */
