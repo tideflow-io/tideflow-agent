@@ -1,3 +1,7 @@
+const objects = require('./objects')
+
+const keepKeys = ['flow', 'execution', 'log', 'step']
+
 /**
  * Reports stds outputed by the in-execution command.
  * 
@@ -7,7 +11,7 @@
  * @param {String} stderr Command's stderr output
  */
 const progress = async (socket, originalMessage, stdLines, date) => {
-  console.log(` || ${new Date()} STDOUT/ERR. Reporting...`)
+  console.log(` || ${new Date()} ${originalMessage.execution} STDOUT/ERR. Reporting...`)
 
   const res = Object.assign({}, originalMessage, {
     stdLines: stdLines.map(l => {
@@ -27,30 +31,6 @@ const progress = async (socket, originalMessage, stdLines, date) => {
 module.exports.progress = progress
 
 /**
- * Reports the final result of an execution, with all stds as an array
- * 
- * @param {Object} socket Socket's io socket that requested the execution
- * @param {Object} originalMessage Message that originally requested the execution
- * @param {object} result Command's stds and exit code output:
- * 
- *  {
- *    stdLines: [{
- *      output: string,
- *      err: boolean,
- *      date: date
- *    }],
- *    code: number
- *  }
- */
-const bulkResult = async (socket, originalMessage, result) => {
-  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`)
-  const res = Object.assign({}, originalMessage, {stdLines:result})
-  await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: false}))
-}
-
-module.exports.bulkResult = bulkResult
-
-/**
  * Reports the final result of an execution.
  * 
  * @param {Object} socket Socket's io socket that requested the execution
@@ -58,12 +38,22 @@ module.exports.bulkResult = bulkResult
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} res Object containing both stds
  */
-const result = (socket, originalMessage, res) => {
-  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting`)
-  socket.emit('tf.notify.finish', Object.assign({}, originalMessage, res))
+const result = (socket, originalMessage, result) => {
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting result`)
+  let message = objects.pick(originalMessage, keepKeys)
+  socket.emit('tf.notify.result', Object.assign({}, message, {result}))
 }
 
 module.exports.result = result
+
+const stdResult = async (socket, originalMessage, result) => {
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting STD results`)
+  let message = objects.pick(originalMessage, keepKeys)
+  const res = Object.assign({}, message, {stdLines:result})
+  await socket.emit('tf.notify.stdResult', Object.assign({}, res, {error: false}))
+}
+
+module.exports.stdResult = stdResult
 
 /**
  * Reports an exception
@@ -72,10 +62,11 @@ module.exports.result = result
  * @param {Object} originalMessage Message that originally requested the execution
  * @param {Object} executionResult Catched exception
  */
-const exception = async (socket, originalMessage, ex) => {
-  console.error(` <= ${new Date()} ${originalMessage.execution} Error`)
-  const res = Object.assign({}, originalMessage, {stdLines:result})
-  await socket.emit('tf.notify.finishBulk', Object.assign({}, res, {error: true}))
+const stdException = async (socket, originalMessage, result) => {
+  console.error(` <= ${new Date()} ${originalMessage.execution} Reporting STD error`)
+  let message = objects.pick(originalMessage, keepKeys)
+  const res = Object.assign({}, message, {stdLines:result})
+  await socket.emit('tf.notify.stdException', Object.assign({}, res, {error: true}))
 }
 
-module.exports.exception = exception
+module.exports.stdException = stdException

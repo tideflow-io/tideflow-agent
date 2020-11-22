@@ -80,20 +80,12 @@ const push = async (socket, topic, req) => {
     await git().clone(cloneUrl, tmpPath)
     await git(tmpPath).checkout(sha)
     delete req.webhook
-    report.result( socket, req,
-      {
-        stdLines: [
-          { m: 'Clone finished', err: false, d: new Date() }
-        ]
-      }
-    )
+    report.stdResult(socket, req, [{ m: 'Clone finished', err: false, d: new Date() }])
   }
   catch (ex) {
-    report.exception( socket, req, {
-      stdLines: [
-        { m: ex.toString(), err: true, d: new Date() }
-      ]
-    } )
+    report.stdException(socket, req, [
+      { m: ex.toString(), err: true, d: new Date() }
+    ])
   }
 }
 
@@ -118,20 +110,12 @@ const pullRequest = async (socket, topic, req) => {
     await git().clone(cloneUrl, tmpPath)
     await git(tmpPath).checkout(sha)
     delete req.webhook
-    report.result( socket, req,
-      {
-        stdLines: [
-          { m: 'Clone finished', err: false, d: new Date() }
-        ]
-      }
-    )
+    report.stdResult(socket, req, [{ m: 'Clone finished', err: false, d: new Date() }])
   }
   catch (ex) {
-    report.exception( socket, req, {
-      stdLines: [
-        { m: ex.toString(), err: true, d: new Date() }
-      ]
-    })
+    report.stdException(socket, req, [
+      { m: ex.toString(), err: true, d: new Date() }
+    ])
   }
 }
 
@@ -156,20 +140,12 @@ const checksuite = async (socket, topic, req) => {
     await git().clone(cloneUrl, tmpPath)
     await git(tmpPath).checkout(sha)
     delete req.webhook
-    report.result( socket, req,
-      {
-        stdLines: [
-          { m: 'Clone finished', err: false, d: new Date() }
-        ]
-      }
-    )
+    report.stdResult(socket, req, [{ m: 'Clone finished', err: false, d: new Date() }])
   }
   catch (ex) {
-    report.exception( socket, req, {
-      stdLines: [
-        { m: ex.toString(), err: true, d: new Date() }
-      ]
-    } )
+    report.stdException(socket, req, [
+      { m: ex.toString(), err: true, d: new Date() }
+    ])
   }
 }
 
@@ -241,16 +217,12 @@ const test_cmd = async (socket, topic, req) => {
 
   try {
     await Promise.all(processCommands)
-    report.result(socket, req,
-      {stdLines: [{ m: 'Execution finished', err: false, d: new Date() }]}
-    )
+    report.stdResult(socket, req, [{ m: 'Execution finished', err: false, d: new Date() }])
   }
   catch (ex) {
-    report.exception(socket, req,
-      [
-        { m: ex.toString(), err: true, d: new Date() }
-      ]
-    )
+    report.stdException(socket, req, [
+      { m: ex.toString(), err: true, d: new Date() }
+    ])
   }
 }
 

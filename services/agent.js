@@ -82,11 +82,10 @@ const execute = (socket, topic, req) => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
       executionFinished(req.execution)
-      report.result( socket, req,
-        [{m: `EXIT CODE ${code}`, err: !!code}]
-      )
-
-      return code ? reject(code) : resolve()
+      !!code ? 
+        report.stdException(socket, req, [{m: `EXIT CODE ${code}`, err: !!code}]) :
+        report.stdResult(socket, req, [{m: `EXIT CODE ${code}`, err: !!code}])
+      return resolve()
     })
     
     // Report an exception
@@ -94,9 +93,9 @@ const execute = (socket, topic, req) => {
       fs.unlinkSync(previousfile)
       fs.unlinkSync(commandFile)
       executionFinished(req.execution)
-      report.exception( socket, req,
-        [{ m: error.toString(), err: true, d: new Date()}]
-      )
+      report.stdException(socket, req, [
+        { m: error.toString(), err: true, d: new Date()}
+      ])
       return reject(error)
     })
   })
@@ -115,29 +114,21 @@ const codeNodeSfc = async (socket, topic, req) => {
   const codeFile = tmp.tmpNameSync()
   fs.writeFileSync(codeFile, req.code)
 
-
-  const previousFile = tmp.tmpNameSync()
-  fs.writeFileSync(previousFile, req.previous)
   try {
     let result = await nodesfc.init({
       file: codeFile,
-      env: {
-        TIDEFLOW_PREVIOUS_FILE: previousFile
-      }
+      method: 'handler',
+      methodArguments: [req.previous]
     })
-    report.bulkResult(socket, req, (result.stdLines||[]).map(l => {
-      return { m: l.output, err: l.err, d: l.date || new Date() }
-    }))
-
+    report.result(socket, req, result)
   }
   catch (ex) {
-    report.exception(socket, req, [
+    report.stdException(socket, req, [
       { m: ex.toString(), err: true, d: new Date() }
     ])
   }
   finally {
     fs.unlinkSync(codeFile)
-    fs.unlinkSync(previousFile)
   }
 }
 

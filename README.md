@@ -109,22 +109,13 @@ The content of such file is a JSON object, with a format similar to:
 
 ### NodeJS SFC actions
 
-The result from previous tasks are stored in a file. You can get the absolute
-path to this file in a environment variable called `TIDEFLOW_PREVIOUS_FILE`.
-This is an example on how you can retrieve the previous actions results:
+The result from previous tasks is passed as the handler's first argument.
 
 ```javascript
-// Include the FileSystem package to read files.
-const fs = require('fs')
-
-// Grab the full path of the file that contents previous tasks results
-const filePath = process.env.TIDEFLOW_PREVIOUS_FILE
-
-// Read the file contents
-const fileContents = fs.readFileSync(filePath, 'utf8')
-
-// Conver the previous tasks results to Javascript object
-const previousResults = JSON.parse(fileContents)
+module.exports.handler = previousResults => {
+  // My logic here
+  return { greeting: 'hello world' }
+}
 ```
 
 ---
