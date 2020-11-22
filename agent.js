@@ -84,6 +84,19 @@ module.exports.exec = (program) => {
   socket.on('tf.authz', function (auth) {
     agent = Object.assign({authenticated: true}, agent, auth)
     console.log(` || ${new Date()} Agent ${auth.title} authorized`)
+
+    socket.emit('clientConfig', {
+      version: pjson.version,
+      os: {
+        hostname: os.hostname(),
+        type: os.type(),
+        platform: os.platform(),
+        arch: os.platform(),
+        release: os.release(),
+        totalmem: os.totalmem(),
+        cpusCount: os.cpus().length
+      }
+    })
   })
 
   // Show a connection lost message
